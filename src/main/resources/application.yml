@@ -34,17 +34,3 @@ spring:
   sql:
     init:
       mode: always  # Always execute the query in 'data.sql' when the application starts. If you select the embedded option, run 'data.sql' only in the test environment.
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: testdb
-#  datasource:
-#    url: jdbc:h2:mem:board;mode=mysql
-#    driver-class-name: org.h2.Driver
-#  sql:
-#    init:
-#      mode: always
-#  test.database.replace: none
