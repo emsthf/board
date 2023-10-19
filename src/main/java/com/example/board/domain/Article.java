@@ -3,14 +3,8 @@ package com.example.board.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -23,9 +17,8 @@ import java.util.Set;
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
 })
-@EntityListeners(AuditingEntityListener.class)  // JPA Auditing을 사용하기 위해 설정
 @Entity
-public class Article {
+public class Article extends AuditingFields {  // 공통 필드를 추출한 AuditingFields를 상속받음
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,22 +39,6 @@ public class Article {
     @OrderBy("id")
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)  // 양방향 바인딩 연관관계의 주인. 실무에서는 양방향 관계를 일부러 풀어서 단방향으로 사용한다(양방향 관계는 서로 강하게 결합이 되어 있어서 데이터 마이그레이션이나 편집을 할 때 불편함이 크다. 원치 않은 데이터 손실이 일어날 수도 있고.)
     private final Set<ArticleComment> articleComments = new HashSet<>();  // 게시글에 달린 댓글들. 연관관계 처리
-
-    @CreatedDate
-    @Column(nullable = false)
-    private LocalDateTime createdAt;  // 생성일시
-
-    @CreatedBy
-    @Column(nullable = false, length = 100)
-    private String createdBy;  // 생성자
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime modifiedAt;  // 수정일시
-
-    @LastModifiedBy
-    @Column(nullable = false, length = 100)
-    private String modifiedBy;  // 수정자
 
 
     protected Article() {}  // JPA는 기본 생성자가 필요하다. 하지만 public으로 모두 열어줄 필요가 없음. 따라서 protected로 설정(private는 사용 불가)
