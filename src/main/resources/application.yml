@@ -28,9 +28,6 @@ spring:
       hibernate:
         format_sql: true  # Format SQL query log
         default_batch_fetch_size: 100  # Set the default batch size for batch loading
-  h2:
-    console:
-      enabled: true
   sql:
     init:
       mode: always  # Always execute the query in 'data.sql' when the application starts. If you select the embedded option, run 'data.sql' only in the test environment.
