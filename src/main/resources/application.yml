@@ -31,3 +31,7 @@ spring:
   sql:
     init:
       mode: always  # Always execute the query in 'data.sql' when the application starts. If you select the embedded option, run 'data.sql' only in the test environment.
+  data:
+    rest:
+      base-path: /api
+      detection-strategy: annotated  # 'spring data rest' setting. If you set it to 'annotated', you can use the @RepositoryRestResource annotation to expose the repository as a REST resource.
