@@ -1,0 +1,50 @@
+debug: false  # Debug log disabled by default
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # Expose all actuator endpoints
+
+logging:
+  level:
+    com.example: DEBUG  # Output only debug level logs from a specific path
+    org.springframework.web.servlet: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # Trace level log that allows you to check binding parameters shown as '?' in JPA's query debug log.
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/board
+    username: sol
+    password: thisisTESTpq!@#
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    defer-datasource-initialization: true  # Allows you to create data in a database for testing (use 'data.sql' query file in resources)
+    hibernate:
+      ddl-auto: create
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true  # Format SQL query log
+        default_batch_fetch_size: 100  # Set the default batch size for batch loading
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      mode: always  # Always execute the query in 'data.sql' when the application starts. If you select the embedded option, run 'data.sql' only in the test environment.
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: testdb
+#  datasource:
+#    url: jdbc:h2:mem:board;mode=mysql
+#    driver-class-name: org.h2.Driver
+#  sql:
+#    init:
+#      mode: always
+#  test.database.replace: none
