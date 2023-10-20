@@ -1,0 +1,75 @@
+package com.example.board.controller;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+/**
+ * @WebMvcTest는 @Controller, @ControllerAdvice, @JsonComponent, Converter, GenericConverter, Filter, WebMvcConfigurer, HandlerMethodArgumentResolver를 스캔한다.
+ * 하지만 해당 테스트에서는 모든 컨트롤러를 읽어들일 필요가 없으므로 ArticleController만 읽어들이도록 설정한다.
+ */
+@DisplayName("View 컨트롤러 - 게시글")
+@WebMvcTest(ArticleController.class)
+class ArticleControllerTest {
+
+    private final MockMvc mvc;
+
+    // 일반적인 스펙상 생성자 주입을 할 때 생성자 위에 붙여주는 @Autowired는 생략이 가능하다.
+    ArticleControllerTest(@Autowired MockMvc mvc) {  // 하지만 테스트 패키지에 있는 생성자 주입은 파라미터에 꼭 @Autowired를 붙여야 한다.
+        this.mvc = mvc;
+    }
+
+    @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 정상 호출")
+    @Test
+    void givenNothing_whenRequestingArticlesView_thenReturnsArticlesView() throws Exception {
+        // given
+
+        // when & then
+        mvc.perform(get("/articles"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(model().attributeExists("articles"));  // 내용 검증이 아닌 Model에 articles이라는 키가 있는지 확인
+    }
+
+    @DisplayName("[view][GET] 게시글 상세 페이지 - 정상 호출")
+    @Test
+    void givenNothing_whenRequestingArticleView_thenReturnsArticleView() throws Exception {
+        // given
+
+        // when & then
+        mvc.perform(get("/articles/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(model().attributeExists("article"));
+    }
+
+    @DisplayName("[view][GET] 게시글 검색 페이지 - 정상 호출")
+    @Test
+    void givenNothing_whenRequestingArticleSearchView_thenReturnsArticleSearchView() throws Exception {
+        // given
+
+        // when & then
+        mvc.perform(get("/articles/search"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(model().attributeExists("article"));
+    }
+
+    @DisplayName("[view][GET] 게시글 해시태그 검색 페이지 - 정상 호출")
+    @Test
+    void givenNothing_whenRequestingArticleHashtagSearchView_thenReturnsArticleHashtagSearchView() throws Exception {
+        // given
+
+        // when & then
+        mvc.perform(get("/articles/search"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(model().attributeExists("article"));
+    }
+}
