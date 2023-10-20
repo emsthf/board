@@ -33,8 +33,35 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // QueryDSL 설정
+    implementation "com.querydsl:querydsl-jpa"
+    implementation "com.querydsl:querydsl-core"
+    implementation "com.querydsl:querydsl-collections"  // collections는 없어도 QueryDSL 사용에는 문제 없음
+    // dependencyManagement가 자동으로 해당 스프링부트 버전에 맞는 위 QueryDSL 버전과 동일 한 것을 넣어줘야 하는데 버전 정보가 중간에 있기 때문에 이런 경우는 생략이 불가능하다.
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"  // querydsl JPAAnnotationProcessor 사용 지정
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"  // java.lang.NoClassDefFoundError (javax.annotation.Generated) 에러 대응 코드
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"  // java.lang.NoClassDefFoundError (javax.annotation.Entity) 에러 대응 코드
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// QueryDSL 설정부
+def generated = "src/main/generated"
+
+// QueryDSL QClass 파일 생성 위치를 지정. QueryDSL의 QClass default 위치는 빌드 폴더 내부이지만, IntelliJ 빌드시 빌드 폴더를 무시하기 때문에 src/main/generated로 밖으로 빼서 지정
+tasks.withType(JavaCompile) {
+    options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+// java source set에 QueryDSL QClass 위치 추가
+sourceSets {
+    main.java.srcDirs += [ generated ]
+}
+
+// gradle clean 시 생성된 QueryDSL QClass 디렉토리 삭제
+clean {
+    delete file(generated)
 }

@@ -1,5 +1,6 @@
 package com.example.board.controller;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * hal explorer가 생성해주는 api를 테스트 하려면 평범한 컨트롤러 테스트 방식으로는 할 수 없다.
+ * 왜? data rest의 기능은 직접 구현한 것이 아니라 소스코드에서 자동으로 구현한 것. 그래서 원래는 테스트의 대상으로 두지 않아도 됨.
+ * 그래서 공부 목적으로 만들어 뒀지만 @Disabled로 테스트를 비활성화
+ *
+ * 이것을 웹 MVC로 슬라이스 테스트를 진행하려면 엄청나게 복잡해진다. 그래서 어쩔 수 없이 통합 테스트로 진행
+ * => 그래서 무겁고 DB 쪽에 mocking이 안된다.(repository 레이어에 mocking 하면 에러가 발생하기 때문이다.)
+ */
+@Disabled("Spring Date Rest 통합테스트는 불필요하므로 제외시킴")
 @DisplayName("Data REST - API 테스트")
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest
+
 public class DataRestTest {
 
     private final MockMvc mvc;
