@@ -39,7 +39,6 @@ class ArticleControllerTest {
                 .andExpect(model().attributeExists("articles"));  // 내용 검증이 아닌 Model에 'articles'이라는 키가 있는지 확인
     }
 
-    @Disabled("구현 중")
     @DisplayName("[view][GET] 게시글 상세 페이지 - 정상 호출")
     @Test
     void givenNothing_whenRequestingArticleView_thenReturnsArticleView() throws Exception {
