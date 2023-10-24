@@ -15,6 +15,7 @@ import java.util.Objects;
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
 })
+@Entity
 public class UserAccount extends AuditingFields {
 
     @Id
@@ -38,18 +39,18 @@ public class UserAccount extends AuditingFields {
     private String nickname;
 
     @Setter
-    private String meno;
+    private String memo;
 
 
     protected UserAccount() {
     }
 
-    public UserAccount(String userId, String userPassword, String email, String nickname, String meno) {
+    public UserAccount(String userId, String userPassword, String email, String nickname, String memo) {
         this.userId = userId;
         this.userPassword = userPassword;
         this.email = email;
         this.nickname = nickname;
-        this.meno = meno;
+        this.memo = memo;
     }
 
     public static UserAccount of(String userId, String userPassword, String email, String nickname, String meno) {
