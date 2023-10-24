@@ -35,3 +35,5 @@ spring:
     rest:
       base-path: /api
       detection-strategy: annotated  # 'spring data rest' setting. If you set it to 'annotated', you can use the @RepositoryRestResource annotation to expose the repository as a REST resource.
+  thymeleaf3:
+    decoupled-logic: true  # Using directly declared Properties
