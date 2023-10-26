@@ -22,7 +22,7 @@ spring:
     defer-datasource-initialization: true  # Allows you to create data in a database for testing (use 'data.sql' query file in resources)
     hibernate:
       ddl-auto: create
-    open-in-view: false  # OSIV-related options. Whether the EntityManager remains open throughout processing the entire request. If you set this to 'false', the persistence context is maintained only up to the service layer where there is a transaction, and if you set it to 'true', the persistence context is maintained until the request ends even in the controller layer where there is no transaction. Lazy 로딩을 많이 활용하고자 할 때 유용하다.
+    open-in-view: false  # OSIV-related options. Whether the EntityManager remains open throughout processing the entire request. If you set this to 'false', the persistence context is maintained only up to the service layer where there is a transaction, and if you set it to 'true', the persistence context is maintained until the request ends even in the controller layer where there is no transaction.
     show-sql: true
     properties:
       hibernate:
