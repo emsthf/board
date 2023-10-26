@@ -14,7 +14,7 @@ public record ArticleWithCommentsResponse(
         String hashtag,
         String email,
         String nickname,
-        Set<ArticleCommentResponse> articleCommentResponses,
+        Set<ArticleCommentResponse> articleCommentsResponses,
         LocalDateTime createdAt
 ) {
 
@@ -25,7 +25,7 @@ public record ArticleWithCommentsResponse(
             String hashtag,
             String email,
             String nickname,
-            Set<ArticleCommentResponse> articleCommentResponses,
+            Set<ArticleCommentResponse> articleCommentsResponses,
             LocalDateTime createdAt
     ) {
         return new ArticleWithCommentsResponse(id,
@@ -34,7 +34,7 @@ public record ArticleWithCommentsResponse(
                 hashtag,
                 email,
                 nickname,
-                articleCommentResponses,
+                articleCommentsResponses,
                 createdAt);
     }
 
