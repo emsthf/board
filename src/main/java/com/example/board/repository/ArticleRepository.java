@@ -4,6 +4,8 @@ import com.example.board.domain.Article;
 import com.example.board.domain.QArticle;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.StringExpression;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
@@ -15,6 +17,12 @@ public interface ArticleRepository extends
         JpaRepository<Article, Long>,
         QuerydslPredicateExecutor<Article>,  // 엔티티 안에 있는 모든 필드에 대한 검색기능을 추가해준다.
         QuerydslBinderCustomizer<QArticle> {  // QuerydslBinderCustomizer에는 QClass를 넣어줘야 한다.
+
+    Page<Article> findByTitleContaining(String title, Pageable pageable);  // containing은 like '%${}%'와 같다.
+    Page<Article> findByContentContaining(String content, Pageable pageable);
+    Page<Article> findByUserAccount_UserIdContaining(String userId, Pageable pageable);
+    Page<Article> findByUserAccount_NicknameContaining(String nickname, Pageable pageable);
+    Page<Article> findByHashtag(String hashtag, Pageable pageable);
 
     @Override
     default void customize(QuerydslBindings bindings, QArticle root) {
