@@ -4,6 +4,10 @@ import com.example.board.domain.Article;
 
 import java.time.LocalDateTime;
 
+/**
+ * Java 13부터 도입된 레코드 타입은 불변 객체이다.
+ * 레코드는 기본 스펙으로 자동으로 getter, setter를 구현해준다.
+ */
 public record ArticleDto(
         Long id,
         UserAccountDto userAccountDto,
@@ -41,6 +45,8 @@ public record ArticleDto(
      * 이 메서드가 존재함으로써 Article 엔티티는 DTO의 존재를 몰라도 된다.
      * 엔티티에는 DTO와의 연관관계가 없이 도메인 로직만 존재하면 되기 때문이다.
      * 이렇게 함으로써 엔티티에 변화가 생기면 DTO에 영향을 주겠지만, DTO엔 변화가 생겨도 엔티티에 영향을 주지 않는다.
+     *
+     * 이러한 메서드를 따로 Mappers라는 클래스를 만들어서 관리할 수도 있다.
      */
     public static ArticleDto from(Article entity) {
         return new ArticleDto(
