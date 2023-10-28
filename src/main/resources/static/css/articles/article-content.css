@@ -1,0 +1,8 @@
+/* 게시글 본몬 */
+#article-content > pre {
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+}
