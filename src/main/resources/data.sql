@@ -4,10 +4,14 @@ insert into user_account (user_id, user_password, nickname, email, memo, created
                           modified_by)
 values ('uno', 'asdf1234', 'Uno', 'uno@mail.com', 'I am Uno.', now(), 'uno', now(), 'uno')
 ;
+insert into user_account (user_id, user_password, nickname, email, memo, created_at, created_by, modified_at,
+                          modified_by)
+values ('sol', 'asdf1234', 'Ssol', 'sol@mail.com', 'I am Sol.', now(), 'sol', now(), 'sol')
+;
 
 -- 123 게시글
 insert into article (user_account_id, title, content, hashtag, created_by, modified_by, created_at, modified_at)
-values (1, 'Quisque ut erat.', 'Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis.
+values (2, 'Quisque ut erat.', 'Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis.
 
 Duis consequat dui nec nisi volutpat eleifend. Donec ut dolor. Morbi vel lectus in quam fringilla rhoncus.
 
@@ -19,7 +23,7 @@ Proin leo odio, porttitor id, consequat in, consequat ut, nulla. Sed accumsan fe
 
 Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.', '#purple', 'Arv', 'Keelby',
         '2021-05-06 11:51:24', '2021-05-23 08:34:54'),
-       (1,
+       (2,
         'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio.',
         'Etiam vel augue. Vestibulum rutrum rutrum neque. Aenean auctor gravida sem.', '#purple', 'Adams', 'Thalia',
         '2021-08-13 08:32:22', '2021-04-02 02:58:19'),
@@ -70,7 +74,7 @@ Pellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luc
 
 Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.',
         '#khaki', 'Adolf', 'Tiff', '2021-12-03 03:44:00', '2021-07-12 00:20:12'),
-       (1, 'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', 'Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.
+       (2, 'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', 'Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.
 
 Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.', null, 'Vivyanne', 'Humbert',
         '2021-08-11 04:04:05', '2021-09-05 17:15:51'),
@@ -84,7 +88,7 @@ Etiam vel augue. Vestibulum rutrum rutrum neque. Aenean auctor gravida sem.', '#
        (1, 'Morbi quis tortor id nulla ultrices aliquet.',
         'Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.', '#yellow',
         'Jesus', 'Peri', '2021-06-18 20:56:37', '2021-07-05 18:44:15'),
-       (1, 'In sagittis dui vel nisl.', 'Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.
+       (2, 'In sagittis dui vel nisl.', 'Aenean fermentum. Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.
 
 Quisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est. Donec odio justo, sollicitudin ut, suscipit a, feugiat et, eros.',
         '#orange', 'Abbot', 'Carolann', '2021-06-16 12:20:50', '2021-01-26 02:34:46'),
@@ -92,11 +96,11 @@ Quisque id justo sit amet sapien dignissim vestibulum. Vestibulum ante ipsum pri
 
 Phasellus in felis. Donec semper sapien a libero. Nam dui.', '#fuscia', 'Shae', 'Rhody', '2021-01-14 23:22:59',
         '2022-01-31 12:02:00'),
-       (1, 'Quisque id justo sit amet sapien dignissim vestibulum.', 'Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.
+       (2, 'Quisque id justo sit amet sapien dignissim vestibulum.', 'Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.
 
 Curabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est.',
         '#puce', 'Dominik', 'Enos', '2021-12-17 17:42:09', '2021-06-28 19:55:49'),
-       (1, 'Nullam varius.', 'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+       (2, 'Nullam varius.', 'Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
 
 Etiam vel augue. Vestibulum rutrum rutrum neque. Aenean auctor gravida sem.
 
