@@ -18,6 +18,8 @@ public interface ArticleRepository extends
         QuerydslPredicateExecutor<Article>,  // 엔티티 안에 있는 모든 필드에 대한 검색기능을 추가해준다.
         QuerydslBinderCustomizer<QArticle> {  // QuerydslBinderCustomizer에는 QClass를 넣어줘야 한다.
 
+    // JPA의 네임드 쿼리에선 원래는 Containing에 IgnoreCase를 붙여줘야 대소문자를 구분하지 않고 조회해오는데 현재 사용중인 MySQL 특성 상 DB에서 대소문자를 구분하지 않고 조회하기 때문에 IgnoreCase를 붙여주지 않아도 대소문자를 구분하지 않고 검색 작동한다.
+    // (대부분의 RDBMS는 기본적으로 대소문자를 구분하지 않는 검색을 수행한다. 다만 애플리케이션에서 해당 검색이 어떻게 작동하는지 의도를 알리기 위해 명시해주는 것이 좋다.)
     Page<Article> findByTitleContaining(String title, Pageable pageable);  // containing은 like '%${}%'와 같다.
     Page<Article> findByContentContaining(String content, Pageable pageable);
     Page<Article> findByUserAccount_UserIdContaining(String userId, Pageable pageable);
