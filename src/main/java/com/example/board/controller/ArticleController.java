@@ -96,18 +96,14 @@ public class ArticleController {
                 "qwer1234",
                 "sol@gmail.com",
                 "Ssol",
-                "iphone 14 pro owner",
-                null,
-                null,
-                null,
-                null
+                "iphone 14 pro owner"
         )));
 
         return "redirect:/articles";
     }
 
     @GetMapping("/{articleId}/form")
-    public String updateArtileForm(@PathVariable Long articleId, ModelMap map) {
+    public String updateArticleForm(@PathVariable Long articleId, ModelMap map) {
         ArticleResponse article = ArticleResponse.from(articleService.getArticle(articleId));
 
         map.addAttribute("article", article);
@@ -117,7 +113,22 @@ public class ArticleController {
     }
 
     @PostMapping("/{articleId}/form")
+    public String updateArticle(@PathVariable Long articleId, ArticleRequest articleRequest) {
+        // TODO: 11/3/23 인증 정보를 넣어줘야 한다.
+        articleService.updateArticle(articleId, articleRequest.toDto(UserAccountDto.of(
+                "sol",
+                "qwer1234",
+                "sol@gmail.com",
+                "Ssol",
+                "iphone 14 pro owner"
+        )));
+
+        return "redirect:/articles/" + articleId;
+    }
+
+    @PostMapping("/{articleId}/form")
     public String deleteArticle(@PathVariable Long articleId) {
+
         // TODO: 11/3/23 인증 정보를 넣어줘야 한다.
         articleService.deleteArticle(articleId);
 
