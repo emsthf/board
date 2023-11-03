@@ -126,9 +126,8 @@ public class ArticleController {
         return "redirect:/articles/" + articleId;
     }
 
-    @PostMapping("/{articleId}/form")
+    @PostMapping ("/{articleId}/delete")
     public String deleteArticle(@PathVariable Long articleId) {
-
         // TODO: 11/3/23 인증 정보를 넣어줘야 한다.
         articleService.deleteArticle(articleId);
 
