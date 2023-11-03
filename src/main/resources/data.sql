@@ -8,6 +8,10 @@ insert into user_account (user_id, user_password, nickname, email, memo, created
                           modified_by)
 values ('uno2', 'asdf1234', 'Uno2', 'uno2@mail.com', 'I am Uno2.', now(), 'uno2', now(), 'uno2')
 ;
+insert into user_account (user_id, user_password, nickname, email, memo, created_at, created_by, modified_at,
+                          modified_by)
+values ('sol', 'qwer1234', 'Ssol', 'sol@gmail.com', 'back-end developer', now(), 'sol', now(), 'sol')
+;
 
 -- 123 게시글
 insert into article (user_id, title, content, hashtag, created_by, modified_by, created_at, modified_at)
