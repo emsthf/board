@@ -26,6 +26,7 @@ public class Article extends AuditingFields {  // 공통 필드를 추출한 Aud
 
     @Setter
     @ManyToOne(optional = false)
+    @JoinColumn(name = "userId")
     private UserAccount userAccount;
 
     @Setter  //@Setter 어노테이션을 엔티티 자체가 아니라 특정 필드에만 붙여 해당 필드만 setter 사용이 가능하게 할 수 있다.

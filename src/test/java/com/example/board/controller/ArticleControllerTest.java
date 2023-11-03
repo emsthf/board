@@ -1,7 +1,7 @@
 package com.example.board.controller;
 
 import com.example.board.config.SecurityConfig;
-import com.example.board.domain.type.SearchType;
+import com.example.board.domain.constant.SearchType;
 import com.example.board.dto.ArticleWithCommentsDto;
 import com.example.board.dto.UserAccountDto;
 import com.example.board.service.ArticleService;
@@ -124,7 +124,7 @@ class ArticleControllerTest {
         long articleId = 1L;
         long totalCount = 1L;
 
-        given(articleService.getArticle(articleId)).willReturn(createArticleWithCommentsDto());
+        given(articleService.getArticleWithComments(articleId)).willReturn(createArticleWithCommentsDto());
         given(articleService.getArticleCount()).willReturn(totalCount);
 
         // when & then
@@ -135,7 +135,7 @@ class ArticleControllerTest {
                 .andExpect(model().attributeExists("article"))
                 .andExpect(model().attributeExists("articleComments"))
                 .andExpect(model().attribute("totalCount", totalCount));
-        then(articleService).should().getArticle(articleId);
+        then(articleService).should().getArticleWithComments(articleId);
         then(articleService).should().getArticleCount();
     }
 
@@ -219,7 +219,6 @@ class ArticleControllerTest {
 
     private UserAccountDto createUserAccountDto() {
         return UserAccountDto.of(
-                1L,
                 "sol",
                 "pw",
                 "sol@gmail.com",

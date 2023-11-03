@@ -2,7 +2,7 @@ package com.example.board.service;
 
 import com.example.board.domain.Article;
 import com.example.board.domain.UserAccount;
-import com.example.board.domain.type.SearchType;
+import com.example.board.domain.constant.SearchType;
 import com.example.board.dto.ArticleDto;
 import com.example.board.dto.ArticleWithCommentsDto;
 import com.example.board.dto.UserAccountDto;
@@ -128,7 +128,7 @@ class ArticleServiceTest {
         given(articleRepository.findById(articleId)).willReturn(Optional.of(article));
 
         // when
-        ArticleWithCommentsDto dto = sut.getArticle(articleId);
+        ArticleWithCommentsDto dto = sut.getArticleWithComments(articleId);
 
         // then
         assertThat(dto)
@@ -147,7 +147,7 @@ class ArticleServiceTest {
         given(articleRepository.findById(articleId)).willReturn(Optional.empty());
 
         // when
-        Throwable t = catchThrowable(() -> sut.getArticle(articleId));
+        Throwable t = catchThrowable(() -> sut.getArticleWithComments(articleId));
 
         // then
         assertThat(t)
@@ -185,7 +185,7 @@ class ArticleServiceTest {
         given(articleRepository.getReferenceById(dto.id())).willReturn(article);
 
         // when
-        sut.updateArticle(dto);
+        sut.updateArticle(dto.id(), dto);
 
         // then
         assertThat(article)

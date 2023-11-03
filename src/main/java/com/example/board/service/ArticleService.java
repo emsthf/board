@@ -1,10 +1,12 @@
 package com.example.board.service;
 
 import com.example.board.domain.Article;
-import com.example.board.domain.type.SearchType;
+import com.example.board.domain.UserAccount;
+import com.example.board.domain.constant.SearchType;
 import com.example.board.dto.ArticleDto;
 import com.example.board.dto.ArticleWithCommentsDto;
 import com.example.board.repository.ArticleRepository;
+import com.example.board.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,7 @@ import java.util.List;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final UserAccountRepository userAccountRepository;
 
     @Transactional(readOnly = true)
     public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable) {
@@ -39,19 +42,27 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
-    public ArticleWithCommentsDto getArticle(long articleId) {
+    public ArticleWithCommentsDto getArticleWithComments(long articleId) {
         return articleRepository.findById(articleId)
                 .map(ArticleWithCommentsDto::from)
                 .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
     }
 
-    public void saveArticle(ArticleDto dto) {
-        articleRepository.save(dto.toEntity());
+    @Transactional(readOnly = true)
+    public ArticleDto getArticle(Long articleId) {
+        return articleRepository.findById(articleId)
+                .map(ArticleDto::from)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
     }
 
-    public void updateArticle(ArticleDto dto) {
+    public void saveArticle(ArticleDto dto) {
+        UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());  // 바로 업데이트 할 수 없으니 수정을 할 객체를 영속성 컨텍스트에 올리기 위해 조회. 이 과정에서 findById()를 사용해버리면 무조건 select 쿼리가 발생해버린다. getReferenceById()를 사용하면 레퍼런스(프록시)만 가져오기 때문에 이 객체의 데이터에 접근하지 않으면 select 쿼리가 발생하지 않는다.
+        articleRepository.save(dto.toEntity(userAccount));
+    }
+
+    public void updateArticle(Long articleId, ArticleDto dto) {
         try {
-            Article article = articleRepository.getReferenceById(dto.id());  // 바로 업데이트 할 수 없으니 수정을 할 객체를 영속성 컨텍스트에 올리기 위해 조회. 이 과정에서 findById()를 사용해버리면 무조건 select 쿼리가 발생해버린다. getReferenceById()를 사용하면 레퍼런스(프록시)만 가져오기 때문에 이 객체의 데이터에 접근하지 않으면 select 쿼리가 발생하지 않는다.
+            Article article = articleRepository.getReferenceById(articleId);
 
             // dto의 데이터가 null일 경우를 위한 방어로직
             if (dto.title() != null) {

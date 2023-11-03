@@ -1,6 +1,6 @@
 package com.example.board.controller;
 
-import com.example.board.domain.type.SearchType;
+import com.example.board.domain.constant.SearchType;
 import com.example.board.response.ArticleResponse;
 import com.example.board.response.ArticleWithCommentsResponse;
 import com.example.board.service.ArticleService;
@@ -50,7 +50,7 @@ public class ArticleController {
 
     @GetMapping("/{articleId}")
     public String article(@PathVariable Long articleId, ModelMap map) {
-        ArticleWithCommentsResponse article = ArticleWithCommentsResponse.from(articleService.getArticle(articleId));
+        ArticleWithCommentsResponse article = ArticleWithCommentsResponse.from(articleService.getArticleWithComments(articleId));
 
         map.addAttribute("article", article);
         map.addAttribute("articleComments", article.articleCommentsResponses());
