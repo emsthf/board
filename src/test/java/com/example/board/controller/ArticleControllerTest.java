@@ -1,11 +1,16 @@
 package com.example.board.controller;
 
 import com.example.board.config.SecurityConfig;
+import com.example.board.domain.constant.FormStatus;
 import com.example.board.domain.constant.SearchType;
+import com.example.board.dto.ArticleDto;
 import com.example.board.dto.ArticleWithCommentsDto;
 import com.example.board.dto.UserAccountDto;
+import com.example.board.dto.request.ArticleRequest;
+import com.example.board.response.ArticleResponse;
 import com.example.board.service.ArticleService;
 import com.example.board.service.PaginationService;
+import com.example.board.util.FormDataEncoder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -25,9 +31,10 @@ import java.util.List;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -35,12 +42,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * 하지만 해당 테스트에서는 모든 컨트롤러를 읽어들일 필요가 없으므로 ArticleController만 읽어들이도록 설정한다.
  */
 @DisplayName("View 컨트롤러 - 게시글")
-@Import(SecurityConfig.class)  // 기본 웹 시큐리티가 아닌 직접 구현한 SecurityConfig를 사용하도록 설정
+@Import({SecurityConfig.class, FormDataEncoder.class})  // 기본 웹 시큐리티가 아닌 직접 구현한 SecurityConfig를 사용하도록 설정
 @WebMvcTest(ArticleController.class)
 class ArticleControllerTest {
 
     @Autowired
     private MockMvc mvc;
+    @Autowired
+    FormDataEncoder formDataEncoder;
 
     @MockBean  // @WebMvcTest의 컨트롤러 단에 의존하는 의존성 테스트를 위해 사용. 컨트롤러에 있는 의존성을 끊고 mocking 해준다.
     private ArticleService articleService;  // 왜 필드 주입을 했는가? JUnit5의 @WebMvcTest 내에는 @Autowired를 인지해서 생성자 주입을 할 수 있게 되었는데 이게 @MockBean에 대해선 구현이 안되어 있기 때문에 통일성을 위해 테스트 코드에선 모두 필드 주입을 사용하기로 결정함.
@@ -123,7 +132,6 @@ class ArticleControllerTest {
         // given
         long articleId = 1L;
         long totalCount = 1L;
-
         given(articleService.getArticleWithComments(articleId)).willReturn(createArticleWithCommentsDto());
         given(articleService.getArticleCount()).willReturn(totalCount);
 
@@ -200,6 +208,107 @@ class ArticleControllerTest {
         then(articleService).should().searchArticlesViaHashtag(eq(hashtag), any(Pageable.class));
         then(articleService).should().getHashtags();
         then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+    }
+
+    @DisplayName("[view][GET] 새 게시글 작성 페이지")
+    @Test
+    void givenNothing_whenRequesting_thenReturnsNewArticlePage() throws Exception {
+        // given
+        
+        // when & then
+        mvc.perform(get("/articles/form"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("articles/from"))
+                .andExpect(model().attribute("formStatus", FormStatus.CREATE));
+    }
+
+    @DisplayName("[view][POST] 새 게시글 등록 - 정상 호출")
+    @Test
+    void givenNewArticleInfo_whenRequesting_thenSavesNewArticle() throws Exception {
+        // given
+        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content", "#new");
+        willDoNothing().given(articleService).saveArticle(any(ArticleDto.class));
+        
+        // when & then
+        mvc.perform(
+                        post("/articles/form")
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                                .content(formDataEncoder.encode(articleRequest))
+                                .with(csrf())
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/articles"))
+                .andExpect(redirectedUrl("/articles"));
+        then(articleService).should().saveArticle(any(ArticleDto.class));
+    }
+
+    @DisplayName("[view][GET] 게시글 수정 페이지")
+    @Test
+    void givenNothing_whenRequesting_thenReturnsUpdatedArticlePage() throws Exception {
+        // given
+        long articleId = 1L;
+        ArticleDto dto = createArticleDto();
+        given(articleService.getArticle(articleId)).willReturn(dto);
+        
+        // when & then
+        mvc.perform(get("/articles/" + articleId + "/form"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("articles/form"))
+                .andExpect(model().attribute("article", ArticleResponse.from(dto)))
+                .andExpect(model().attribute("formStatus", FormStatus.UPDATE));
+        then(articleService).should().getArticle(articleId);
+    }
+
+    @DisplayName("[view][POST] 게시글 수정 - 정상 호출")
+    @Test
+    void givenUpdatedArticleInfo_whenRequesting_thenUpdatesNewArticle() throws Exception {
+        // given
+        long articleId = 1L;
+        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content", "#new");
+        willDoNothing().given(articleService).updateArticle(eq(articleId), any(ArticleDto.class));
+        
+        // when & then
+        mvc.perform(
+                        post("/articles/" + articleId + "/from")
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                                .content(formDataEncoder.encode(articleRequest))
+                                .with(csrf())
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/articles/" + articleId))
+                .andExpect(redirectedUrl("/articles/" + articleId));
+        then(articleService).should().updateArticle(eq(articleId), any(ArticleDto.class));
+    }
+
+    @DisplayName("[view][POST] 게시글 삭제 - 정상 호출")
+    @Test
+    void givenArticleIdToDelete_whenRequesting_thenDeletesArticle() throws Exception {
+        // given
+        long articleId = 1L;
+        willDoNothing().given(articleService).deleteArticle(articleId);
+        
+        // when & then
+        mvc.perform(
+                        post("/articles/" + articleId + "/delete")
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                                .with(csrf())
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/articles"))
+                .andExpect(redirectedUrl("/articles"));
+        then(articleService).should().deleteArticle(articleId);
+    }
+
+
+    private ArticleDto createArticleDto() {
+        return ArticleDto.of(
+                createUserAccountDto(),
+                "title",
+                "content",
+                "#java"
+        );
     }
 
     private ArticleWithCommentsDto createArticleWithCommentsDto() {
