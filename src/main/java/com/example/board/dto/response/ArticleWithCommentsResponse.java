@@ -1,4 +1,4 @@
-package com.example.board.response;
+package com.example.board.dto.response;
 
 import com.example.board.dto.ArticleWithCommentsDto;
 
@@ -12,6 +12,7 @@ public record ArticleWithCommentsResponse(
         String title,
         String content,
         String hashtag,
+        String userId,
         String email,
         String nickname,
         Set<ArticleCommentResponse> articleCommentsResponses,
@@ -23,6 +24,7 @@ public record ArticleWithCommentsResponse(
             String title,
             String content,
             String hashtag,
+            String userId,
             String email,
             String nickname,
             Set<ArticleCommentResponse> articleCommentsResponses,
@@ -32,6 +34,7 @@ public record ArticleWithCommentsResponse(
                 title,
                 content,
                 hashtag,
+                userId,
                 email,
                 nickname,
                 articleCommentsResponses,
@@ -49,6 +52,7 @@ public record ArticleWithCommentsResponse(
                 dto.title(),
                 dto.content(),
                 dto.hashtag(),
+                dto.userAccountDto().userId(),
                 dto.userAccountDto().email(),
                 nickname,
                 dto.articleCommentDtos().stream()

@@ -63,23 +63,26 @@ public class ArticleService {
     public void updateArticle(Long articleId, ArticleDto dto) {
         try {
             Article article = articleRepository.getReferenceById(articleId);
+            UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
 
-            // dto의 데이터가 null일 경우를 위한 방어로직
-            if (dto.title() != null) {
-                article.setTitle(dto.title());
+            if (article.getUserAccount().equals(userAccount)) {
+                // dto의 데이터가 null일 경우를 위한 방어로직
+                if (dto.title() != null) {
+                    article.setTitle(dto.title());
+                }
+                if (dto.content() != null) {
+                    article.setContent(dto.content());
+                }
+                article.setHashtag(dto.hashtag());
+                // 이 메서드는 클래스 레벨의 트랜젝션으로 묶여있다. 그래서 트랜젝션이 끝날 때 영속성 컨텍스트는 article이 변한 것을 감지해낸다. 그리고 update 쿼리를 날려준다.
             }
-            if (dto.content() != null) {
-                article.setContent(dto.content());
-            }
-            article.setHashtag(dto.hashtag());
-            // 이 메서드는 클래스 레벨의 트랜젝션으로 묶여있다. 그래서 트랜젝션이 끝날 때 영속성 컨텍스트는 article이 변한 것을 감지해낸다. 그리고 update 쿼리를 날려준다.
         } catch (EntityNotFoundException e) {
-            log.warn("게시글 업데이트 실패. 게시글을 찾을 수 없습니다 - dto: {}", dto);
+            log.warn("게시글 업데이트 실패. 게시글을 수정하는데 필요한 정보를 찾을 수 없습니다 - dto: {}", e.getLocalizedMessage());
         }
     }
 
-    public void deleteArticle(long articleId) {
-        articleRepository.deleteById(articleId);
+    public void deleteArticle(long articleId, String userId) {
+        articleRepository.deleteByIdAndUserAccount_UserId(articleId, userId);
     }
 
     public long getArticleCount() {

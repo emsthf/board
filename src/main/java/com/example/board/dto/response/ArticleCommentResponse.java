@@ -1,4 +1,4 @@
-package com.example.board.response;
+package com.example.board.dto.response;
 
 import com.example.board.dto.ArticleCommentDto;
 
@@ -6,14 +6,22 @@ import java.time.LocalDateTime;
 
 public record ArticleCommentResponse(
         Long id,
+        String userId,
         String email,
         String nickname,
         String content,
         LocalDateTime createdAt
 ) {
 
-    public static ArticleCommentResponse of(Long id, String email, String nickname, String content, LocalDateTime createdAt) {
-        return new ArticleCommentResponse(id, email, nickname, content, createdAt);
+    public static ArticleCommentResponse of(
+            Long id,
+            String userId,
+            String email,
+            String nickname,
+            String content,
+            LocalDateTime createdAt
+    ) {
+        return new ArticleCommentResponse(id, userId, email, nickname, content, createdAt);
     }
 
     public static ArticleCommentResponse from(ArticleCommentDto dto) {
@@ -24,6 +32,7 @@ public record ArticleCommentResponse(
 
         return new ArticleCommentResponse(
                 dto.id(),
+                dto.userAccountDto().userId(),
                 dto.userAccountDto().email(),
                 nickname,
                 dto.content(),

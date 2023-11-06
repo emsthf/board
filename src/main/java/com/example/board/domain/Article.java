@@ -63,8 +63,8 @@ public class Article extends AuditingFields {  // 공통 필드를 추출한 Aud
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Article article)) return false;
-        return id != null && Objects.equals(id, article.id);  // id가 아직 영속화되지 않았을 때에는 동등성 검사가 의미 없는 것으로 판단해서 id != null를 AND 조건으로 추가해 줌
+        if (!(o instanceof Article that)) return false;
+        return id != null && Objects.equals(id, that.getId());  // id가 아직 영속화되지 않았을 때에는 동등성 검사가 의미 없는 것으로 판단해서 id != null를 AND 조건으로 추가해 줌
     }
 
     @Override

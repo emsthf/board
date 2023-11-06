@@ -20,6 +20,8 @@ public interface ArticleCommentRepository extends
 
     List<ArticleComment> findByArticle_Id(Long articleId);  // Article_Id의 _는 Article의 요소로 들어간다는 뜻. 즉, 댓글에 있는 요소로 검색한 것이 아니라 게시글의 id로 댓글을 검색한 것.
 
+    void deleteByIdAndUserAccount_UserId(Long articleCommentId, String userId);
+
     @Override
     default void customize(QuerydslBindings bindings, QArticleComment root) {
         bindings.excludeUnlistedProperties(true);
