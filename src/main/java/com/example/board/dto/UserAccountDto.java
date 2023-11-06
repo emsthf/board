@@ -4,11 +4,7 @@ import com.example.board.domain.UserAccount;
 
 import java.time.LocalDateTime;
 
-/**
- * DTO for {@link com.example.board.domain.UserAccount}
- */
 public record UserAccountDto(
-        Long id,
         String userId,
         String userPassword,
         String email,
@@ -20,17 +16,35 @@ public record UserAccountDto(
         String modifiedBy
 ) {
 
-    public static UserAccountDto of(Long id,
-                          String userId,
-                          String userPassword,
-                          String email,
-                          String nickname,
-                          String memo,
-                          LocalDateTime createdAt,
-                          String createdBy,
-                          LocalDateTime modifiedAt,
-                          String modifiedBy) {
-        return new UserAccountDto(id,
+    // 영속 상태가 아닐 때(save를 하려할 때)에는 Auditing 값은 없으니 null로 설정해주는 팩토리 메서드
+    public static UserAccountDto of(String userId,
+                                    String userPassword,
+                                    String email,
+                                    String nickname,
+                                    String memo) {
+        return new UserAccountDto(
+                userId,
+                userPassword,
+                email,
+                nickname,
+                memo,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    public static UserAccountDto of(String userId,
+                                    String userPassword,
+                                    String email,
+                                    String nickname,
+                                    String memo,
+                                    LocalDateTime createdAt,
+                                    String createdBy,
+                                    LocalDateTime modifiedAt,
+                                    String modifiedBy) {
+        return new UserAccountDto(
                 userId,
                 userPassword,
                 email,
@@ -39,12 +53,12 @@ public record UserAccountDto(
                 createdAt,
                 createdBy,
                 modifiedAt,
-                modifiedBy);
+                modifiedBy
+        );
     }
 
     public static UserAccountDto from(UserAccount entity) {
         return new UserAccountDto(
-                entity.getId(),
                 entity.getUserId(),
                 entity.getUserPassword(),
                 entity.getEmail(),

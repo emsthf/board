@@ -1,6 +1,7 @@
 package com.example.board.dto;
 
 import com.example.board.domain.Article;
+import com.example.board.domain.UserAccount;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,20 @@ public record ArticleDto(
         String modifiedBy
 ) {
 
+    public static ArticleDto of(UserAccountDto userAccountDto, String title, String content, String hashtag) {
+        return new ArticleDto(
+                null,
+                userAccountDto,
+                title,
+                content,
+                hashtag,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
     public static ArticleDto of(Long id,
                                 UserAccountDto userAccountDto,
                                 String title,
@@ -29,7 +44,8 @@ public record ArticleDto(
                                 String createdBy,
                                 LocalDateTime modifiedAt,
                                 String modifiedBy) {
-        return new ArticleDto(id,
+        return new ArticleDto(
+                id,
                 userAccountDto,
                 title,
                 content,
@@ -37,7 +53,8 @@ public record ArticleDto(
                 createdAt,
                 createdBy,
                 modifiedAt,
-                modifiedBy);
+                modifiedBy
+        );
     }
 
     /**
@@ -68,9 +85,9 @@ public record ArticleDto(
      * 엔티티에는 DTO와의 연관관계가 없이 도메인 로직만 존재하면 되기 때문이다.
      * 이렇게 함으로써 엔티티에 변화가 생기면 DTO에 영향을 주겠지만, DTO엔 변화가 생겨도 엔티티에 영향을 주지 않는다.
      */
-    public Article toEntity() {
+    public Article toEntity(UserAccount userAccount) {
         return Article.of(
-                userAccountDto.toEntity(),
+                userAccount,
                 title,
                 content,
                 hashtag
