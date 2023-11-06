@@ -23,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -183,7 +182,6 @@ class ArticleControllerTest {
         then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
     }
 
-    @Disabled
     @DisplayName("[view][GET] 게시글 해시태그 검색 페이지 - 정상 호출, 해시태그 입력")
     @Test
     void givenHashtag_whenRequestingArticleSearchHashtagView_thenReturnsArticleSearchHashtagView() throws Exception {
@@ -219,7 +217,7 @@ class ArticleControllerTest {
         mvc.perform(get("/articles/form"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-                .andExpect(view().name("articles/from"))
+                .andExpect(view().name("articles/form"))
                 .andExpect(model().attribute("formStatus", FormStatus.CREATE));
     }
 
@@ -271,7 +269,7 @@ class ArticleControllerTest {
         
         // when & then
         mvc.perform(
-                        post("/articles/" + articleId + "/from")
+                        post("/articles/" + articleId + "/form")
                                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                                 .content(formDataEncoder.encode(articleRequest))
                                 .with(csrf())

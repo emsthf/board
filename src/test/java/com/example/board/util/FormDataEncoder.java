@@ -10,7 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Map;
 
 @TestComponent
-public class FormDataEncoder {
+public class FormDataEncoder {  // 기존 비즈니스 로직과 상관없이 테스트만을 위한 목적으로 만든 빈
 
     private final ObjectMapper mapper;
 
