@@ -7,7 +7,6 @@ import com.example.board.dto.ArticleCommentDto;
 import com.example.board.dto.UserAccountDto;
 import com.example.board.repository.ArticleCommentRepository;
 import com.example.board.repository.ArticleRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,40 +28,37 @@ class ArticleCommentServiceTest {
 
     @InjectMocks
     private ArticleCommentService sut;
+
     @Mock
     private ArticleRepository articleRepository;
     @Mock
     private ArticleCommentRepository articleCommentRepository;
 
-    @Disabled("미구현")
     @DisplayName("게시글 ID로 조회하면, 해당하는 댓글 리스트를 반환한다")
     @Test
     void givenArticleId_whenSearchingArticleComments_thenReturnsArticleComments() {
         // given
         Long articleId = 1L;
-        given(articleRepository.findById(articleId)).willReturn(Optional.of(
-                Article.of(
-                        UserAccount.of("Sol", "pw", null, null, null),
-                        "title",
-                        "content",
-                        "#java"
-                )
-        ));
+        ArticleComment expected = createArticleComment("댓글 내용");
+
+        given(articleCommentRepository.findByArticle_Id(articleId)).willReturn(List.of(expected));
 
         // when
-        List<ArticleCommentDto> articleComments = sut.searchArticleComments(articleId);
+        List<ArticleCommentDto> actual = sut.searchArticleComments(articleId);
 
         // then
-        assertThat(articleComments).isNotNull();
-        then(articleRepository).should().findById(articleId);
+        assertThat(actual)
+                .hasSize(1)
+                .first().hasFieldOrPropertyWithValue("content", expected.getContent());
+        then(articleCommentRepository).should().findByArticle_Id(articleId);
     }
 
-    @Disabled("미구현")
     @DisplayName("댓글 정보를 입력하면, 댓글을 저장한다")
     @Test
     void givenArticleCommentInfo_whenSavingArticleComment_thenSavesArticleComment() {
         // given
         ArticleCommentDto dto = createArticleCommentDto("댓글");
+
         given(articleRepository.getReferenceById(dto.articleId())).willReturn(createArticle());
         given(articleCommentRepository.save(any(ArticleComment.class))).willReturn(null);
 
@@ -75,7 +70,6 @@ class ArticleCommentServiceTest {
         then(articleCommentRepository).should().save(any(ArticleComment.class));
     }
 
-    @Disabled("미구현")
     @DisplayName("댓글 저장을 시도했는데 맞는 게시글이 없으면, 경로 로그를 찍고 아무것도 하지 않는다")
     @Test
     void givenNonExistentArticle_whenSavingArticleComment_thenLogsSituationAndDoesNothing() {
@@ -92,7 +86,6 @@ class ArticleCommentServiceTest {
         then(articleCommentRepository).shouldHaveNoInteractions();
     }
 
-    @Disabled("미구현")
     @DisplayName("댓글 정보를 입력하면 댓글을 수정한다")
     @Test
     void givenArticleCommentInfo_whenUpdatingArticleComment_thenUpdatesArticleComment() {
@@ -111,10 +104,9 @@ class ArticleCommentServiceTest {
         assertThat(articleComment.getContent())
                 .isNotEqualTo(oldContent)
                 .isEqualTo(updatedContent);
-        then(articleCommentRepository).should().getReferenceById(dto.articleId());
+        then(articleCommentRepository).should().getReferenceById(dto.id());
     }
 
-    @Disabled("미구현")
     @DisplayName("없는 댓글 정보를 수정하려 하면, 경고 로그를 찍고 아무 것도 하지 않는다")
     @Test
     void givenNonExistentArticleComment_whenUpdatingArticleComment_thenLogsWarningAndDoesNothing() {
@@ -130,12 +122,12 @@ class ArticleCommentServiceTest {
         then(articleCommentRepository).should().getReferenceById(dto.id());
     }
 
-    @Disabled("미구현")
     @DisplayName("댓글 ID를 입력하면, 댓글을 삭제한다")
     @Test
     void givenArticleCommentId_whenDeletingArticleComment_thenDeletesArticleComment() {
         // given
         Long articleCommentId = 1L;
+
         willDoNothing().given(articleCommentRepository).deleteById(articleCommentId);
 
         // when
