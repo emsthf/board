@@ -64,7 +64,7 @@ public class Article extends AuditingFields {  // 공통 필드를 추출한 Aud
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Article that)) return false;
-        return this.getId() != null && Objects.equals(getId(), that.getId());  // id가 아직 영속화되지 않았을 때에는 동등성 검사가 의미 없는 것으로 판단해서 id != null를 AND 조건으로 추가해 줌.
+        return this.getId() != null && Objects.equals(this.getId(), that.getId());  // id가 아직 영속화되지 않았을 때에는 동등성 검사가 의미 없는 것으로 판단해서 id != null를 AND 조건으로 추가해 줌.
         // JPA로 엔티티를 다룰 때, 엔티티 데이터는 하이버네이트 구현체가 만든 프록시 객체를 이용하여 지연 로딩될 수 있다.
         // 따라서 엔티티를 조회할 때 필드에 직접 접근하면 id == null인 상황이 있을 수 있고, 이러면 올바른 비교를 하지 못하게 된다. getter를 사용하면 이러한 문제를 예방할 수 있다.
     }
