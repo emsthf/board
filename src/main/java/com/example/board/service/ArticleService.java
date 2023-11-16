@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -33,11 +34,21 @@ public class ArticleService {
         }
 
         return switch (searchType) {
-            case TITLE -> articleRepository.findByTitleContaining(searchKeyword, pageable).map(ArticleDto::from);
-            case CONTENT -> articleRepository.findByContentContaining(searchKeyword, pageable).map(ArticleDto::from);
-            case ID -> articleRepository.findByUserAccount_UserIdContaining(searchKeyword, pageable).map(ArticleDto::from);
-            case NICKNAME -> articleRepository.findByUserAccount_NicknameContaining(searchKeyword, pageable).map(ArticleDto::from);
-            case HASHTAG -> articleRepository.findByHashtag("#" + searchKeyword, pageable).map(ArticleDto::from);
+            case TITLE ->
+                    articleRepository.findByTitleContaining(searchKeyword, pageable)
+                            .map(ArticleDto::from);
+            case CONTENT ->
+                    articleRepository.findByContentContaining(searchKeyword, pageable)
+                            .map(ArticleDto::from);
+            case ID ->
+                    articleRepository.findByUserAccount_UserIdContaining(searchKeyword, pageable)
+                            .map(ArticleDto::from);
+            case NICKNAME ->
+                    articleRepository.findByUserAccount_NicknameContaining(searchKeyword, pageable)
+                            .map(ArticleDto::from);
+            case HASHTAG ->
+                    articleRepository.findByHashtagNames(Arrays.stream(searchKeyword.split(" ")).toList(), pageable)
+                            .map(ArticleDto::from);
         };
     }
 
@@ -73,8 +84,6 @@ public class ArticleService {
                 if (dto.content() != null) {
                     article.setContent(dto.content());
                 }
-                article.setHashtag(dto.hashtag());
-                // 이 메서드는 클래스 레벨의 트랜젝션으로 묶여있다. 그래서 트랜젝션이 끝날 때 영속성 컨텍스트는 article이 변한 것을 감지해낸다. 그리고 update 쿼리를 날려준다.
             }
         } catch (EntityNotFoundException e) {
             log.warn("게시글 업데이트 실패. 게시글을 수정하는데 필요한 정보를 찾을 수 없습니다 - dto: {}", e.getLocalizedMessage());
@@ -95,7 +104,7 @@ public class ArticleService {
             return Page.empty(pageable);
         }
 
-        return articleRepository.findByHashtag(hashtag, pageable).map(ArticleDto::from);
+        return articleRepository.findByHashtagNames(null, pageable).map(ArticleDto::from);
     }
 
     public List<String> getHashtags() {
