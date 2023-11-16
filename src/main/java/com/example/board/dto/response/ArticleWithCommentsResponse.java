@@ -1,6 +1,7 @@
 package com.example.board.dto.response;
 
 import com.example.board.dto.ArticleWithCommentsDto;
+import com.example.board.dto.HashTagDto;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -11,7 +12,7 @@ public record ArticleWithCommentsResponse(
         Long id,
         String title,
         String content,
-        String hashtag,
+        Set<String> hashtags,
         String userId,
         String email,
         String nickname,
@@ -23,7 +24,7 @@ public record ArticleWithCommentsResponse(
             Long id,
             String title,
             String content,
-            String hashtag,
+            Set<String> hashtags,
             String userId,
             String email,
             String nickname,
@@ -33,7 +34,7 @@ public record ArticleWithCommentsResponse(
         return new ArticleWithCommentsResponse(id,
                 title,
                 content,
-                hashtag,
+                hashtags,
                 userId,
                 email,
                 nickname,
@@ -51,7 +52,9 @@ public record ArticleWithCommentsResponse(
                 dto.id(),
                 dto.title(),
                 dto.content(),
-                dto.hashtag(),
+                dto.hashtagDtos().stream()
+                        .map(HashTagDto::hashtagName)
+                        .collect(Collectors.toUnmodifiableSet()),
                 dto.userAccountDto().userId(),
                 dto.userAccountDto().email(),
                 nickname,

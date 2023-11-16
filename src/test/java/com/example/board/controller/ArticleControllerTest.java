@@ -5,6 +5,7 @@ import com.example.board.domain.constant.FormStatus;
 import com.example.board.domain.constant.SearchType;
 import com.example.board.dto.ArticleDto;
 import com.example.board.dto.ArticleWithCommentsDto;
+import com.example.board.dto.HashTagDto;
 import com.example.board.dto.UserAccountDto;
 import com.example.board.dto.request.ArticleRequest;
 import com.example.board.dto.response.ArticleResponse;
@@ -72,7 +73,9 @@ class ArticleControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))  // contentType()은 정확히 일치해야 하지만 contentTypeCompatibleWith()은 'text/html;charset=UTF-8'같이 옵션이 포함된 것도 인정된다.
                 .andExpect(view().name("articles/index"))  // 뷰 이름 검증
                 .andExpect(model().attributeExists("articles"))  // 내용 검증이 아닌 Model에 'articles'이라는 키가 있는지 확인
-                .andExpect(model().attributeExists("paginationBarNumbers"));
+                .andExpect(model().attributeExists("paginationBarNumbers"))
+                .andExpect(model().attributeExists("searchTypes"))
+                .andExpect(model().attribute("searchTypeHashtag", SearchType.HASHTAG));
         then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));  // 이러한 조건에서 동작을 하는지 검증. should()에는 '1회 호출'이라는 의미가 포함되어 있음
         then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
     }
@@ -144,7 +147,7 @@ class ArticleControllerTest {
     @WithMockUser  // @WithMockUser는 mocking한 인증 정보를 넣어주지만, 직접 구현한 UserDetailsService를 타지 않기 때문에 실제 있는 사용자 정보는 이용할 수 없다.
     @DisplayName("[view][GET] 게시글 상세 페이지 - 정상 호출, 인증된 사용자")
     @Test
-    void givenNothing_whenRequestingArticleView_thenReturnsArticleView() throws Exception {
+    void givenAuthorizedUser_whenRequestingArticleView_thenReturnsArticleView() throws Exception {
         // given
         long articleId = 1L;
         long totalCount = 1L;
@@ -159,7 +162,8 @@ class ArticleControllerTest {
                 .andExpect(view().name("articles/detail"))
                 .andExpect(model().attributeExists("article"))
                 .andExpect(model().attributeExists("articleComments"))
-                .andExpect(model().attribute("totalCount", totalCount));
+                .andExpect(model().attribute("totalCount", totalCount))
+                .andExpect(model().attribute("searchTypeHashtag", SearchType.HASHTAG));
         then(articleService).should().getArticleWithComments(articleId);
         then(articleService).should().getArticleCount();
     }
@@ -245,7 +249,7 @@ class ArticleControllerTest {
     @Test
     void givenNewArticleInfo_whenRequesting_thenSavesNewArticle() throws Exception {
         // given
-        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content", "#new");
+        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content");
         willDoNothing().given(articleService).saveArticle(any(ArticleDto.class));
         
         // when & then
@@ -277,7 +281,7 @@ class ArticleControllerTest {
     @WithMockUser
     @DisplayName("[view][GET] 게시글 수정 페이지 - 정상 호출, 인증된 사용자")
     @Test
-    void givenNothing_whenRequesting_thenReturnsUpdatedArticlePage() throws Exception {
+    void givenAuthorizedUser_whenRequesting_thenReturnsUpdatedArticlePage() throws Exception {
         // given
         long articleId = 1L;
         ArticleDto dto = createArticleDto();
@@ -299,7 +303,7 @@ class ArticleControllerTest {
     void givenUpdatedArticleInfo_whenRequesting_thenUpdatesNewArticle() throws Exception {
         // given
         long articleId = 1L;
-        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content", "#new");
+        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content");
         willDoNothing().given(articleService).updateArticle(eq(articleId), any(ArticleDto.class));
         
         // when & then
@@ -342,7 +346,7 @@ class ArticleControllerTest {
                 createUserAccountDto(),
                 "title",
                 "content",
-                "#java"
+                Set.of(HashTagDto.of("java"))
         );
     }
 
@@ -353,7 +357,7 @@ class ArticleControllerTest {
                 Set.of(),
                 "title",
                 "content",
-                "#java",
+                Set.of(HashTagDto.of("java")),
                 LocalDateTime.now(),
                 "sol",
                 LocalDateTime.now(),

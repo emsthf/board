@@ -1,20 +1,27 @@
 package com.example.board.dto.request;
 
 import com.example.board.dto.ArticleDto;
+import com.example.board.dto.HashTagDto;
 import com.example.board.dto.UserAccountDto;
 
-public record ArticleRequest(String title, String content, String hashtag) {
+import java.util.Set;
 
-    public static ArticleRequest of(String title, String content, String hashtag) {
-        return new ArticleRequest(title, content, hashtag);
+public record ArticleRequest(String title, String content) {
+
+    public static ArticleRequest of(String title, String content) {
+        return new ArticleRequest(title, content);
     }
 
     public ArticleDto toDto(UserAccountDto userAccountDto) {
+        return toDto(userAccountDto, null);
+    }
+
+    public ArticleDto toDto(UserAccountDto userAccountDto, Set<HashTagDto> hashtagDtos) {
         return ArticleDto.of(
                 userAccountDto,
                 title,
                 content,
-                hashtag
+                hashtagDtos
         );
     }
 }
