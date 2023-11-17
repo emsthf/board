@@ -20,6 +20,7 @@ public record BoardPrincipal(
 ) implements UserDetails {  // UserDetails는 스프링 시큐리티의 사용자 정보를 담고 권한을 관리하는 인터페이스
 
     public static BoardPrincipal of(String username, String password, String email, String nickname, String memo) {
+        // 현재 인증만 하고 권한을 다루고 있지 않아 임의 세팅
         Set<RoleType> roleTypes = Set.of(RoleType.USER);
 
         return new BoardPrincipal(

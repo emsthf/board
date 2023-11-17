@@ -26,8 +26,8 @@ public class ArticleComment extends AuditingFields {
     private Article article;  // 게시글(ID). 연관관계 처리
 
     @Setter
-    @ManyToOne(optional = false)
     @JoinColumn(name = "userId")
+    @ManyToOne(optional = false)
     private UserAccount userAccount;  // 댓글 작성자(ID). 연관관계 처리
 
     @Setter
