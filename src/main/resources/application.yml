@@ -14,10 +14,9 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/board
-    username: sol
-    password: thisisTESTpq!@#
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://localhost:5432/board
+    username: postgres # sol
+    password: test1234 # thisisTESTpq!@#
   jpa:
     defer-datasource-initialization: true  # Allows you to create data in a database for testing (use 'data.sql' query file in resources)
     hibernate:
